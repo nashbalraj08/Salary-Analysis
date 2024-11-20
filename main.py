@@ -1,18 +1,31 @@
-# This is a sample Python script.
+import dash
+import dash_bootstrap_components as dbc
+from dash import Dash, html
+import pandas as pd
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-    print("hellow nash")
-    print("hello nash 23")
+app = dash.Dash(__name__, use_pages=True, external_stylesheets=[dbc.themes.CYBORG])
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+navbar = dbc.NavbarSimple(
+    dbc.DropdownMenu(
+        [
+            dbc.DropdownMenuItem(page["name"], href=page["path"])
+            for page in dash.page_registry.values()
+            if page["module"] != "pages.not_found_404"
+        ],
+        nav=True,
+        label="More Pages",
+    ),
+    brand="Multi Page App Demo",
+    color="primary",
+    dark=True,
+    className="mb-5",
+)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+app.layout = dbc.Container(
+    [navbar, dash.page_container],
+    fluid=True,
+)
+
+if __name__ == "__main__":
+    app.run_server(debug=True)
