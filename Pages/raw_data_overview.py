@@ -1,4 +1,5 @@
 from dash import Dash, dcc, html, Input, Output, callback,Patch
+import dash_bootstrap_components as dbc
 import plotly.express as px
 import dash
 import dash_ag_grid as dag
@@ -9,7 +10,7 @@ dash.register_page(__name__, "/raw_data_overview")
 df = px.data.tips()
 days = df.day.unique()
 
-data = pd.read_csv("./Data/DataAnalyst.csv")
+data = pd.read_csv("./Data/DataAnalyst.csv",index_col=0)
 print(data)
 numeric_data = data.select_dtypes(include=['number'])   # Separate numeric columns
 categorical_data = data.select_dtypes(exclude=['number'])   # Separate categorical columns
@@ -68,11 +69,25 @@ duplicates_summary = pd.DataFrame({
 })
 #print(duplicates_summary)
 
+# Create a DataFrame to store unique values for each column
+unique_values_all_df = pd.DataFrame({
+    "Column Name": data.columns,
+    "Unique Count": [data[col].nunique() for col in data.columns],
+    "Unique Values": [data[col].unique().tolist() for col in data.columns]
+})
+
+
 layout = html.Div(
     [
-        dcc.Markdown("Raw Data Table Overview"),
-        dcc.Input(id="quick-filter-input", placeholder="filter..."),
-        dag.AgGrid(
+        dbc.Row([
+        dcc.Markdown("Raw Data Table Overview",style={"textAlign": "center"})],className='mb-3'),
+
+        dbc.Row([
+        dcc.Input(id="quick-filter-input", placeholder="filter...")
+        ],className='mb-3'),
+        html.Hr(),
+        dbc.Row([
+            dag.AgGrid(
             id="quick-filter-simple",
             columnDefs=columnDefs,
             rowData=data.to_dict("records"),
@@ -84,8 +99,85 @@ layout = html.Div(
                              'cacheQuickFilter': True,
                              "rowSelection":"single"},
         )
-    ]
-)
+        ],className='mb-3'),
+        dbc.Row([
+            dcc.Markdown("Descriptive Stats Table Overview")
+        ]),
+        dbc.Row([
+            dag.AgGrid(id="grid",
+                       rowData=numeric_stats.to_dict("records"),
+                       columnDefs=[{"field":i} for i in numeric_stats.columns],
+                       dashGridOptions={"rowSelection":"single"})
+
+        ]),
+        html.Hr(),
+        dbc.Row([
+            dcc.Markdown("Categorical Stats Table Overview")
+        ]),
+        dbc.Row([
+            dag.AgGrid(id="categorical-grid",
+                       rowData=categorical_stats.to_dict("records"),
+                       columnDefs=[{"field": i} for i in categorical_stats.columns],
+                       dashGridOptions={"rowSelection": "single"})
+        ]),
+        html.Hr(),
+        dbc.Row([
+            dcc.Markdown("Whitespaces in each column")
+        ]),
+        dbc.Row([
+            dag.AgGrid(id="categorical-grid-2",
+                       rowData=whitespace_summary.to_dict("records"),
+                       columnDefs=[{"field": i} for i in whitespace_summary.columns],
+                       dashGridOptions={"rowSelection": "single"})
+        ]),
+        html.Hr(),
+        dbc.Row([
+            dcc.Markdown("Empty Values in each column")
+        ]),
+        dbc.Row([
+            dag.AgGrid(id="categorical-grid-3",
+                       rowData=missing_values.to_dict("records"),
+                       columnDefs=[{"field": i} for i in missing_values.columns],
+                       dashGridOptions={"rowSelection": "single"})
+        ]),
+        html.Hr(),
+        dbc.Row([
+            dcc.Markdown("Special Characters in each column")
+        ]),
+        dbc.Row([
+            dag.AgGrid(id="categorical-grid-4",
+                       rowData=special_char_summary.to_dict("records"),
+                       columnDefs=[{"field": i} for i in special_char_summary.columns],
+                       dashGridOptions={"rowSelection": "single"})
+        ]),
+        html.Hr(),
+        dbc.Row([
+            dcc.Markdown("Total Duplicates")
+        ]),
+        dbc.Row([
+            dag.AgGrid(id="categorical-grid-5",
+                       rowData=duplicates_summary.to_dict("records"),
+                       columnDefs=[{"field": i} for i in duplicates_summary.columns],
+                       dashGridOptions={"rowSelection": "single","paginationPageSize": 1})
+        ]),
+        html.Hr(),
+        dbc.Row([
+            dcc.Markdown("Unique Values")
+        ]),
+        dbc.Row([
+            dag.AgGrid(id="unique-values-table",
+                        columnDefs=[{"field": i} for i in unique_values_all_df.columns],
+                        rowData=unique_values_all_df.to_dict("records"),
+                        defaultColDef={"filter": True},
+                        dashGridOptions={"pagination": True,
+                                         "paginationPageSize": 10,
+                                         "paginationPageSizeSelector": False,
+                                         "animateRows": False,
+                                         'cacheQuickFilter': True,
+                                         "rowSelection":"single"}
+            ),
+        ])
+    ])
 
 
 @callback(
