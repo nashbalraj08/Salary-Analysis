@@ -9,13 +9,7 @@ import numpy as np
 dash.register_page(__name__, "/data-exploration-visuals")
 
 
-data = {
-    "via": ["Via A", "Via B", "Via C", "Via D", "Via E", "Via F", "Via G", "Via H", "Via I", "Via J",
-            "Via K", "Via L", "Via M", "Via N", "Via O", "Via P", "Via Q", "Via R", "Via S", "Via T"],
-    "salary": [4000, 3500, 3200, 4500, 5000, 2800, 4200, 3900, 3000, 3100,
-               3400, 4700, 5100, 2900, 4100, 4300, 3600, 3800, 3700, 4800]
-}
-data = pd.DataFrame(data)
+data = pd.read_csv("./Data/DataAnalyst.csv",index_col=0)
 
 numeric_data = data.select_dtypes(include=['number'])  # Separate numeric columns
 categorical_data = data.select_dtypes(exclude=['number'])  # Separate categorical columns
@@ -25,13 +19,13 @@ categorical_columns = categorical_data.columns
 x_axis = numeric_columns[0] if len(numeric_columns) > 0 else None  # First numeric column
 y_axis = categorical_columns[0] if len(categorical_columns) > 0 else None  # First categorical column
 default_axis = data.columns[0] if len(data.columns) >0 else None
-# Calculate statistics
-mean = data["salary"].mean()
-median = data["salary"].median()
-std_dev = data["salary"].std()
-# Manually calculate the maximum y-value (frequency) of the histogram
-counts, bins = np.histogram(data["salary"], bins=30)
-max_y = counts.max()  # Get the highest frequency from the histogram
+# # Calculate statistics
+# mean = data["salary"].mean()
+# median = data["salary"].median()
+# std_dev = data["salary"].std()
+# # Manually calculate the maximum y-value (frequency) of the histogram
+# counts, bins = np.histogram(data["salary"], bins=30)
+# max_y = counts.max()  # Get the highest frequency from the histogram
 
 
 layout = dbc.Container([
@@ -75,9 +69,11 @@ layout = dbc.Container([
                         multi=False,
                         value=default_axis
                     )
-                ]),
+                ], className='mb-3'),
+               
+
                 dbc.Row([
-                dbc.Button('Update Histogram', id='button-2', n_clicks=0, style={"width": "100%"})
+                dbc.Button('Update Histogram & Box Whisker', id='button-2', n_clicks=0, style={"width": "100%"})
                 ],className='mb-3'),
                 dbc.Row([
                 dcc.Graph(id="histogram")
@@ -87,22 +83,51 @@ layout = dbc.Container([
                 dbc.Row([
                 dcc.Graph(id="box-whisker")
             ], className='mb-3')
+        ]),
+        html.Div([
+                dbc.Row([
+                dcc.Dropdown(
+                        id="scatter-plot-dropdown",
+                        options=data.columns,
+                        multi=True,
+                        value=default_axis
+                    )
+                ], className='mb-3'),
+                dbc.Row([
+                html.H5("Scatter Matrix Plot of Correlations"),
+                dcc.Graph(id="scatter-matrix")
+            ], className='mb-3')
         ])
+
 
     ])
 ])
 @callback(
     Output("histogram", "figure"),
+    Output("box-whisker", "figure"),
     Input('button-2', 'n_clicks'),
     State("histogram-dropdown", "value"),
 )
-def update_histogram_2(clicks,x_axis):
+def update_histogram(clicks,x_axis):
     fig = px.histogram(
         data,
         x=x_axis,
         nbins=30,  # Number of bins
         title="Distribution"
     )
+    # Customize the appearance
+    fig.update_layout(
+        template="plotly_dark",  # Dark theme
+        yaxis_title="Frequency",
+        title=dict(x=0.5),  # Center the title
+        font=dict(size=12),
+        legend_title="Legend",
+    )
+    boxplot = px.box(data,x=x_axis,
+                     title="Box Plot",
+                     points="all")
+
+    boxplot.update_layout(template='plotly_dark')
 #     # Add vertical lines for mean, median, and standard deviations
 #     fig.add_shape(
 #         type="line",
@@ -142,31 +167,9 @@ def update_histogram_2(clicks,x_axis):
 #         name="+1 Std Dev"
 #     )
 #
-    # Customize the appearance
-    fig.update_layout(
-        template="plotly_dark",  # Dark theme
-        xaxis_title="salary",
-        yaxis_title="Frequency",
-        title=dict(x=0.5),  # Center the title
-        font=dict(size=12),
-        legend_title="Legend",
-    )
-    return fig
-#
-# callback(
-#     Output("box-whisker", "figure"),
-#     Input('my-button','n_clicks')
-# )
-# def update_box_plot(clicks):
-#     boxplot = px.box(data,
-#                      x="salary",
-#                      title="Box Plot",
-#                      points="all")
-#
-#
-#     boxplot.update_layout(template='plotly_dark')
-#
-#     return boxplot
+
+    return fig, boxplot
+
 @callback(
     Output("bar-graph", "figure"),
     Input('my-button','n_clicks'),
@@ -175,7 +178,7 @@ def update_histogram_2(clicks,x_axis):
 )
 
 def update_bar_graph(clicks,x_dropdown, y_dropdown):
-    bar_graph_2 = px.bar(
+    bar_graph = px.bar(
         data,
         x=x_dropdown,
         y=y_dropdown,
@@ -186,7 +189,7 @@ def update_bar_graph(clicks,x_dropdown, y_dropdown):
         # Sort in descending order
     )
     # Update layout
-    bar_graph_2.update_layout(
+    bar_graph.update_layout(
         template="plotly_dark",  # Dark theme
         xaxis_title=x_dropdown,
         yaxis_title=y_dropdown,
@@ -197,4 +200,25 @@ def update_bar_graph(clicks,x_dropdown, y_dropdown):
         # )
     )
 
-    return bar_graph_2
+    return bar_graph
+
+@callback(
+    Output("scatter-matrix", "figure"),
+    Input('scatter-plot-dropdown', 'value')
+)
+def update_scatter_matrix(option):
+    scatter_matrix_fig = px.scatter_matrix(
+        data,
+        dimensions=option,
+        title="Scatter Matrix Plot of Correlations",
+        labels={col: col for col in data.columns}  # Update labels to columns
+    )
+    scatter_matrix_fig.update_traces(diagonal_visible=False, marker=dict(size=5,
+                                                          opacity=0.6))  # hides diagonals, You can also set color to a column name if you want the colors to vary by a category in the data.
+    scatter_matrix_fig.update_layout(
+        template="plotly_dark",  # Dark theme
+        dragmode='select',
+        width=1500,
+        height=1500
+    )
+    return scatter_matrix_fig
