@@ -90,7 +90,7 @@ layout = dbc.Container([
                         id="scatter-plot-dropdown",
                         options=data.columns,
                         multi=True,
-                        value=default_axis
+
                     )
                 ], className='mb-3'),
                 dbc.Row([
