@@ -5,7 +5,7 @@ import dash
 import dash_ag_grid as dag
 import pandas as pd
 
-dash.register_page(__name__, "/raw_data_overview")
+dash.register_page(__name__, "/raw-data-overview")
 
 df = px.data.tips()
 days = df.day.unique()
