@@ -5,6 +5,8 @@ import dash
 import dash_ag_grid as dag
 import pandas as pd
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 dash.register_page(__name__, "/")
 
@@ -180,6 +182,80 @@ layout = dbc.Container([
          7. Are certain regions more likely to offer salaries in the $150k+ range?
         ''')
         ], width=6)
+    ], className='mb-3'),
+
+    dbc.Row([
+        dbc.Col([
+            html.H5("Correlation Analysis of Numeric Variables"),
+            html.Img(src=dash.get_asset_url('scatter_matrix_heatmap.png'), style={"width": "100%", "height": "auto"})
+        ],width=6),
+        dbc.Col([dcc.Markdown('''
+        ## Insights
+        
+        ## Questions to Explore:
+            
+        ''')], width=6)
+    ], className='mb-3'),
+
+    dbc.Row([
+        dbc.Col([
+            html.H5("Correlation Analysis of Categorical Variables "),
+            html.Img(src=dash.get_asset_url('scatter_matrix_heatmap_categorical.png'), style={"width": "100%", "height": "auto"})
+        ], width=6),
+        dbc.Col([dcc.Markdown('''
+        ## Insights
+        * Selecting Categorical Columns for Correlation must have fewer unique value and represent significant groupings or categories likely to have relationships
+        * Type of ownership: Has 14 unique values and can show relationships with Sector, or Size
+        * Sector: Has 25 unique values and often aligns closely with Type of ownership.
+        * Size: With only 8 levels, it’s highly relevant to examine correlations with revenue and other categorical columns.
+        * The two variables are highly correlated, is sector government and type of ownership government (0.79) drop one to reduce redundancy.
+        ## Questions to Explore:
+
+        ''')], width=6)
+    ], className='mb-3'),
+
+    dbc.Row([
+        dbc.Col([
+            html.H5("Correlation Analysis of Numeric & Categorical Variables "),
+            html.Img(src=dash.get_asset_url('scatter_matrix_heatmap.png'), style={"width": "100%", "height": "auto"})
+        ], width=6),
+        dbc.Col([dcc.Markdown('''
+        ## Insights
+        
+        ## Questions to Explore:
+
+        ''')], width=6)
+    ], className='mb-3'),
+
+    dbc.Row([
+        dbc.Col([
+            html.H5("Categorical Variable Analysis"),
+            html.Img(src=dash.get_asset_url('heatmap_20241203-171223.png'), style={"width": "100%", "height": "auto"}),
+            html.Img(src=dash.get_asset_url('heatmap_20241203-171227.png'), style={"width": "100%", "height": "auto"}),
+            html.Img(src=dash.get_asset_url('heatmap_20241203-171323.png'), style={"width": "100%", "height": "auto"})
+        ], width=6),
+        dbc.Col([dcc.Markdown('''
+        Visualize the most common industries, locations, or companies
+        ## Insights
+        
+        ## Questions to Explore:
+
+        ''')], width=6)
+    ], className='mb-3'),
+
+    dbc.Row([
+        dbc.Col([
+            html.H5("Salary Analysis")
+        ], width=6),
+        dbc.Col([dcc.Markdown('''
+        Analyze Min Salary and Max Salary distribution.
+        Compare salaries by Industry or Location using boxplots.
+        ## Insights
+        
+        ## Questions to Explore:
+
+        ''')], width=6)
     ], className='mb-3')
+
 
 ])

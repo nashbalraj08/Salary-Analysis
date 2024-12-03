@@ -5,6 +5,10 @@ import dash
 import dash_ag_grid as dag
 import pandas as pd
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+
 
 dash.register_page(__name__, "/data-exploration-visuals")
 
@@ -29,6 +33,26 @@ default_axis = data.columns[0] if len(data.columns) >0 else None
 # counts, bins = np.histogram(data["salary"], bins=30)
 # max_y = counts.max()  # Get the highest frequency from the histogram
 # Define a route for serving images
+
+correlation_matrix = numeric_data.corr()
+plt.figure(figsize=(10, 8))  # Adjust the figure size
+sns.heatmap(
+    correlation_matrix,
+    annot=True,  # Show correlation values
+    fmt=".2f",  # Limit to 2 decimal places
+    cmap="coolwarm",  # Color map
+    cbar_kws={'label': 'Correlation'},  # Add label to the color bar
+    linewidths=0.5,  # Add space between cells
+)
+
+# Title and labels
+plt.title("Correlation Heatmap", fontsize=16)
+plt.xticks(rotation=45, ha="right")  # Rotate x-axis labels
+plt.yticks(rotation=0)
+plt.tight_layout()
+plt.savefig("assets/scatter_matrix_heatmap.png")  # Save the figure as an image
+plt.close()  # Close the figure to free memory
+#plt.show()
 
 
 layout = dbc.Container([
@@ -99,6 +123,12 @@ layout = dbc.Container([
                 dbc.Row([
                 html.H5("Scatter Matrix Plot of Correlations"),
                 dcc.Graph(id="scatter-matrix")
+            ], className='mb-3')
+        ]),
+        html.Div([
+            dbc.Row([
+                html.H5("Heatmap Correlation"),
+                html.Img(src=dash.get_asset_url('scatter_matrix_heatmap.png'), style={"width": "100%", "height": "auto"}),
             ], className='mb-3')
         ])
 
@@ -175,10 +205,10 @@ def update_bar_graph(clicks,x_dropdown, y_dropdown):
 )
 def update_scatter_matrix(option):
     scatter_matrix_fig = px.scatter_matrix(
-        data,
+        numeric_data,
         dimensions=option,
         title="Scatter Matrix Plot of Correlations",
-        labels={col: col for col in data.columns}  # Update labels to columns
+        labels={col: col for col in numeric_data.columns}  # Update labels to columns
     )
     scatter_matrix_fig.update_traces(diagonal_visible=False, marker=dict(size=5,
                                                           opacity=0.6))  # hides diagonals, You can also set color to a column name if you want the colors to vary by a category in the data.
@@ -189,3 +219,6 @@ def update_scatter_matrix(option):
         height=1500
     )
     return scatter_matrix_fig
+
+
+
