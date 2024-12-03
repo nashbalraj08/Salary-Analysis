@@ -9,7 +9,9 @@ import numpy as np
 dash.register_page(__name__, "/data-exploration-visuals")
 
 
-data = pd.read_csv("./Data/DataAnalyst.csv",index_col=0)
+data = pd.read_csv("./Data/cleaned_data.csv",index_col=0)
+# Define the path to the images directory
+
 
 numeric_data = data.select_dtypes(include=['number'])  # Separate numeric columns
 categorical_data = data.select_dtypes(exclude=['number'])  # Separate categorical columns
@@ -26,6 +28,7 @@ default_axis = data.columns[0] if len(data.columns) >0 else None
 # # Manually calculate the maximum y-value (frequency) of the histogram
 # counts, bins = np.histogram(data["salary"], bins=30)
 # max_y = counts.max()  # Get the highest frequency from the histogram
+# Define a route for serving images
 
 
 layout = dbc.Container([
@@ -99,7 +102,6 @@ layout = dbc.Container([
             ], className='mb-3')
         ])
 
-
     ])
 ])
 @callback(
@@ -115,6 +117,10 @@ def update_histogram(clicks,x_axis):
         nbins=30,  # Number of bins
         title="Distribution"
     )
+    fig.update_traces(texttemplate='%{y}', textposition='auto')
+
+
+
     # Customize the appearance
     fig.update_layout(
         template="plotly_dark",  # Dark theme
@@ -126,47 +132,8 @@ def update_histogram(clicks,x_axis):
     boxplot = px.box(data,x=x_axis,
                      title="Box Plot",
                      points="all")
-
     boxplot.update_layout(template='plotly_dark')
-#     # Add vertical lines for mean, median, and standard deviations
-#     fig.add_shape(
-#         type="line",
-#         x0=mean,
-#         x1=mean,
-#         y0=0,
-#         y1=max_y,
-#         # y1=fig.data[0].y.max(), #dynamically adjusts the line height based on the histogram.
-#         line=dict(color="red", dash="dash"),
-#         name="Mean"
-#     )
-#     fig.add_shape(
-#         type="line",
-#         x0=median,
-#         x1=median,
-#         y0=0,y1=max_y,
-#         # y1=fig.data[0].y.max(),
-#         line=dict(color="yellow", dash="dash"),
-#         name="Median"
-#     )
-#     fig.add_shape(
-#         type="line",
-#         x0=mean - std_dev,
-#         x1=mean - std_dev,
-#         y0=0,y1=max_y,
-#         # y1=fig.data[0].y.max(),
-#         line=dict(color="green", dash="dash"),
-#         name="-1 Std Dev"
-#     )
-#     fig.add_shape(
-#         type="line",
-#         x0=mean + std_dev,
-#         x1=mean + std_dev,
-#         y0=0,y1=max_y,
-#         # y1=fig.data[0].y.max(),
-#         line=dict(color="green", dash="dash"),
-#         name="+1 Std Dev"
-#     )
-#
+
 
     return fig, boxplot
 
