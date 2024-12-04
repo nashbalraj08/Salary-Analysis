@@ -187,12 +187,23 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.H5("Correlation Analysis of Numeric Variables"),
-            html.Img(src=dash.get_asset_url('scatter_matrix_heatmap.png'), style={"width": "100%", "height": "auto"})
+            html.Img(src=dash.get_asset_url('scatter_matrix_heatmap.png'), style={"width": "100%", "height": "auto"}),
+            html.Img(src=dash.get_asset_url('scatter_matrix_heatmap_adjusted.png'), style={"width": "100%", "height": "auto"})
         ],width=6),
         dbc.Col([dcc.Markdown('''
         ## Insights
-        
-        ## Questions to Explore:
+        * High correlation (0.86): Indicates that Min Salary and Max Salary are strongly related. This suggests they 
+            contain redundant information since we split it from variable of Salary ranges 
+        * Create new variables that might provide better insights such as 
+            * Salary Range = Max Salary - Min Salary
+            * Salary Midpoint = (Max Salary + Min Salary) / 2
+        * Second scatter matrix shows :
+            * Salary Range has a moderate positive correlation (0.78) with Max Salary and a weaker correlation (0.35) 
+                with Min Salary. This makes sense because the range is more influenced by the variability in 
+                maximum salaries.
+            * Salary Midpoint is strongly correlated with both Min Salary (0.95) and Max Salary (0.98). This is expected, 
+                as it is derived from their averages.
+            
             
         ''')], width=6)
     ], className='mb-3'),
@@ -200,16 +211,14 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.H5("Correlation Analysis of Categorical Variables "),
-            html.Img(src=dash.get_asset_url('scatter_matrix_heatmap_categorical.png'), style={"width": "100%", "height": "auto"})
+            html.Img(src=dash.get_asset_url('heatmap_20241204-145249.png'), style={"width": "100%", "height": "auto"}),
+            html.Img(src=dash.get_asset_url('heatmap_20241204-145252.png'), style={"width": "100%", "height": "auto"}),
+            html.Img(src=dash.get_asset_url('heatmap_20241204-145339.png'), style={"width": "100%", "height": "auto"})
         ], width=6),
         dbc.Col([dcc.Markdown('''
         ## Insights
-        * Selecting Categorical Columns for Correlation must have fewer unique value and represent significant groupings or categories likely to have relationships
-        * Type of ownership: Has 14 unique values and can show relationships with Sector, or Size
-        * Sector: Has 25 unique values and often aligns closely with Type of ownership.
-        * Size: With only 8 levels, it’s highly relevant to examine correlations with revenue and other categorical columns.
-        * The two variables are highly correlated, is sector government and type of ownership government (0.79) drop one to reduce redundancy.
-        ## Questions to Explore:
+        * remove sector government as its highly correlated with government 
+
 
         ''')], width=6)
     ], className='mb-3'),
@@ -217,12 +226,11 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.H5("Correlation Analysis of Numeric & Categorical Variables "),
-            html.Img(src=dash.get_asset_url('scatter_matrix_heatmap.png'), style={"width": "100%", "height": "auto"})
+            html.Img(src=dash.get_asset_url('heatmap_20241204-145536.png'), style={"width": "100%", "height": "auto"})
         ], width=6),
         dbc.Col([dcc.Markdown('''
-        ## Insights
-        
-        ## Questions to Explore:
+        No highly correlated variables for categorical variables.
+        Highly correlated variables for certain numeric variables but is acceptable
 
         ''')], width=6)
     ], className='mb-3'),
@@ -230,12 +238,18 @@ layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             html.H5("Categorical Variable Analysis"),
-            html.Img(src=dash.get_asset_url('heatmap_20241203-171223.png'), style={"width": "100%", "height": "auto"}),
-            html.Img(src=dash.get_asset_url('heatmap_20241203-171227.png'), style={"width": "100%", "height": "auto"}),
-            html.Img(src=dash.get_asset_url('heatmap_20241203-171323.png'), style={"width": "100%", "height": "auto"})
+            html.Img(src=dash.get_asset_url('Top 10_Most_Common_Industries.png'), style={"width": "100%", "height": "auto"}),
+            html.Img(src=dash.get_asset_url('Top_10_Most_Common_Company_Names.png'),
+                     style={"width": "100%", "height": "auto"}),
+            html.Img(src=dash.get_asset_url('Top_10_Most_Common_Headquarters.png'),
+                     style={"width": "100%", "height": "auto"}),
+            html.Img(src=dash.get_asset_url('Top_10_Most_Common_Location.png'),
+                     style={"width": "100%", "height": "auto"}),
+            html.Img(src=dash.get_asset_url('Top_10_Most_Common_Sectors.png'),
+                     style={"width": "100%", "height": "auto"}),
+
         ], width=6),
         dbc.Col([dcc.Markdown('''
-        Visualize the most common industries, locations, or companies
         ## Insights
         
         ## Questions to Explore:
@@ -251,6 +265,13 @@ layout = dbc.Container([
         Analyze Min Salary and Max Salary distribution.
         Compare salaries by Industry or Location using boxplots.
         ## Insights
+           top 10 companies with the most "Easy Apply" job postings
+            df_easy_apply = cleaned_df[cleaned_df['Easy Apply'] == True] #Filters the data DataFrame to include only rows where 'Easy Apply' is True.
+            
+            top_companies = cleaned_df[cleaned_df['Easy Apply']].groupby('Company Name').size().nlargest(10)
+            
+            print("Top 10 companies with the most 'Easy Apply' job postings:")
+            print(top_companies)
         
         ## Questions to Explore:
 

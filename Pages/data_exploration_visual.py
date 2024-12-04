@@ -17,6 +17,8 @@ data = pd.read_csv("./Data/cleaned_data.csv",index_col=0)
 # Define the path to the images directory
 
 
+
+
 numeric_data = data.select_dtypes(include=['number'])  # Separate numeric columns
 categorical_data = data.select_dtypes(exclude=['number'])  # Separate categorical columns
 numeric_columns = numeric_data.columns
@@ -25,14 +27,7 @@ categorical_columns = categorical_data.columns
 x_axis = numeric_columns[0] if len(numeric_columns) > 0 else None  # First numeric column
 y_axis = categorical_columns[0] if len(categorical_columns) > 0 else None  # First categorical column
 default_axis = data.columns[0] if len(data.columns) >0 else None
-# # Calculate statistics
-# mean = data["salary"].mean()
-# median = data["salary"].median()
-# std_dev = data["salary"].std()
-# # Manually calculate the maximum y-value (frequency) of the histogram
-# counts, bins = np.histogram(data["salary"], bins=30)
-# max_y = counts.max()  # Get the highest frequency from the histogram
-# Define a route for serving images
+
 
 correlation_matrix = numeric_data.corr()
 plt.figure(figsize=(10, 8))  # Adjust the figure size
@@ -54,6 +49,31 @@ plt.savefig("assets/scatter_matrix_heatmap.png")  # Save the figure as an image
 plt.close()  # Close the figure to free memory
 #plt.show()
 
+# Correlation Analysis
+# add new variables
+data['Salary Range'] = data['Max Salary'] - data['Min Salary']
+data['Salary Midpoint'] = (data['Max Salary'] + data['Min Salary']) / 2
+numeric_data = data.select_dtypes(include=['number'])
+#print(numeric_data)
+correlation_matrix = numeric_data.corr()
+plt.figure(figsize=(10, 8))  # Adjust the figure size
+sns.heatmap(
+    correlation_matrix,
+    annot=True,  # Show correlation values
+    fmt=".2f",  # Limit to 2 decimal places
+    cmap="coolwarm",  # Color map
+    cbar_kws={'label': 'Correlation'},  # Add label to the color bar
+    linewidths=0.5,  # Add space between cells
+)
+
+# Title and labels
+plt.title("Correlation Heatmap", fontsize=16)
+plt.xticks(rotation=45, ha="right")  # Rotate x-axis labels
+plt.yticks(rotation=0)
+plt.tight_layout()
+plt.savefig("assets/scatter_matrix_heatmap_adjusted.png")  # Save the figure as an image
+plt.close()
+# plt.show()
 
 layout = dbc.Container([
     html.Div([

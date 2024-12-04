@@ -17,24 +17,6 @@ selected_columns = ['Type of ownership','Sector','Size']  # Replace with your co
 dummies = pd.get_dummies(categorical_data[selected_columns], drop_first=True)
 # print(dummies.corr())
 correlation_matrix = dummies.corr()
-# plt.figure(figsize=(20, 16))  # Adjust the figure size
-# sns.heatmap(
-#     filtered_corr,
-#     annot=True,  # Show correlation values
-#     fmt=".2f",  # Limit to 2 decimal places
-#     cmap="coolwarm",  # Color map
-#     cbar_kws={'label': 'Correlation'},  # Add label to the color bar
-#     linewidths=0.5,  # Add space between cells
-# )
-#
-# # Title and labels
-# plt.title("Correlation Heatmap", fontsize=8)
-# plt.xticks(rotation=45, ha="right")  # Rotate x-axis labels
-# plt.yticks(rotation=0)
-# plt.tight_layout()
-# plt.savefig("C:/Users/Nash Balraj/PycharmProjects/salaryAnalysis/assets/scatter_matrix_heatmap_categorical.png")  # Save the figure as an image
-# # plt.close()
-# plt.show()
 
 def matrix_heatmap(data, save_directory="../assets" ):
     plt.figure(figsize=(20, 16))  # Adjust the figure size
@@ -64,13 +46,31 @@ def matrix_heatmap(data, save_directory="../assets" ):
 
 
 # Call the function
-matrix_heatmap(correlation_matrix)
+# matrix_heatmap(correlation_matrix)
+
+
 
 #Adjust threshold
 threshold = 0.7
 filtered_corr = correlation_matrix[(correlation_matrix > threshold) | (correlation_matrix < -threshold)]
-matrix_heatmap(filtered_corr)
+# matrix_heatmap(filtered_corr)
 
 # Drop one of the correlated variables
 adjusted_corr = dummies.drop(columns=['Sector_Government'])
-matrix_heatmap(adjusted_corr)
+# matrix_heatmap(adjusted_corr)
+
+# combine numeric and categorical variables for correlation analysis
+# Correlation Analysis
+# add new variables
+
+
+adjusted_corr = ['Type of ownership','Sector','Size']   # Replace with your columns
+categorical_dummies = pd.get_dummies(data[adjusted_corr], drop_first=True)
+# Drop one of the correlated variables
+adjusted_corr = categorical_dummies.drop(columns=['Sector_Government'])
+numerical_columns = ['Rating', 'Min Salary', 'Max Salary', 'Salary Range', 'Salary Midpoint']
+combined_data = pd.concat([adjusted_corr, data[numerical_columns]], axis=1)
+correlation_matrix_combo = combined_data.corr()
+filtered_corr = correlation_matrix_combo[(correlation_matrix_combo > threshold) | (correlation_matrix_combo < -threshold)]
+
+# matrix_heatmap(filtered_corr)

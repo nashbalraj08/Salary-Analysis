@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import re
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 data = pd.read_csv("../Data/DataAnalyst.csv", index_col=0)
 
@@ -46,6 +48,7 @@ cleaned_df['Salary Estimate'] = cleaned_df['Salary Estimate'].replace('-1','$41K
 # Company Name
 cleaned_df['Company Name'] = cleaned_df['Company Name'].fillna('Unknown')  # Replace empty strings
 cleaned_df['Company Name'] = cleaned_df['Company Name'].replace('1','Unknown')  # Replace -1 to False
+cleaned_df['Company Name'] = cleaned_df['Company Name'].str.split(r'\r\n').str[0] # move everything from the backslashes
 #print("After Clean Up Total Missing Values:",cleaned_df.isnull().sum())
 
 #Headquarters
@@ -141,17 +144,67 @@ cleaned_df = cleaned_df.drop('Salary Estimate', axis=1)
 # print(cleaned_df[['Min Salary', 'Max Salary']] .head(5))
 
 
+#Correlation Analysis Cleaning
+numeric_data = cleaned_df.select_dtypes(include=['number'])  # Separate numeric columns
+categorical_data = cleaned_df.select_dtypes(exclude=['number'])  # Separate categorical columns
+numeric_columns = numeric_data.columns
+categorical_columns = categorical_data.columns
+
+correlation_matrix = numeric_data.corr()
+plt.figure(figsize=(10, 8))  # Adjust the figure size
+sns.heatmap(
+    correlation_matrix,
+    annot=True,  # Show correlation values
+    fmt=".2f",  # Limit to 2 decimal places
+    cmap="coolwarm",  # Color map
+    cbar_kws={'label': 'Correlation'},  # Add label to the color bar
+    linewidths=0.5,  # Add space between cells
+)
+
+# Title and labels
+plt.title("Correlation Heatmap", fontsize=16)
+plt.xticks(rotation=45, ha="right")  # Rotate x-axis labels
+plt.yticks(rotation=0)
+plt.tight_layout()
+plt.savefig("../assets/scatter_matrix_heatmap.png")  # Save the figure as an image
+plt.close()  # Close the figure to free memory
+#plt.show()
+
+# add new variables
+cleaned_df['Salary Range'] = cleaned_df['Max Salary'] - cleaned_df['Min Salary']
+cleaned_df['Salary Midpoint'] = (cleaned_df['Max Salary'] + cleaned_df['Min Salary']) / 2
+numeric_data = cleaned_df.select_dtypes(include=['number'])
+#print(numeric_data)
+correlation_matrix = numeric_data.corr()
+plt.figure(figsize=(10, 8))  # Adjust the figure size
+sns.heatmap(
+    correlation_matrix,
+    annot=True,  # Show correlation values
+    fmt=".2f",  # Limit to 2 decimal places
+    cmap="coolwarm",  # Color map
+    cbar_kws={'label': 'Correlation'},  # Add label to the color bar
+    linewidths=0.5,  # Add space between cells
+)
+
+# Title and labels
+plt.title("Correlation Heatmap", fontsize=16)
+plt.xticks(rotation=45, ha="right")  # Rotate x-axis labels
+plt.yticks(rotation=0)
+plt.tight_layout()
+plt.savefig("../assets/scatter_matrix_heatmap_adjusted.png")  # Save the figure as an image
+plt.close()
+# plt.show()
+
+#check if Location and Headquarters are highly correlated
+# Check how often Location matches Headquarters
+overlap_percentage = (data['Location'] == data['Headquarters']).mean() * 100
+print(f"Percentage of overlap: {overlap_percentage:.2f}%")
+# Create a cross-tabulation
+crosstab = pd.crosstab(data['Location'], data['Headquarters'])
+print(crosstab)
+
 # Save the cleaned data to a CSV file
 csv_path = '../Data/cleaned_data.csv'
 cleaned_df.to_csv(csv_path, index=False)
 
 
-
-
-# top 10 companies with the most "Easy Apply" job postings
-# df_easy_apply = cleaned_df[cleaned_df['Easy Apply'] == True] #Filters the data DataFrame to include only rows where 'Easy Apply' is True.
-
-# top_companies = cleaned_df[cleaned_df['Easy Apply']].groupby('Company Name').size().nlargest(10)
-#
-# print("Top 10 companies with the most 'Easy Apply' job postings:")
-# print(top_companies)
