@@ -273,7 +273,7 @@ layout = dbc.Container([
             print("Top 10 companies with the most 'Easy Apply' job postings:")
             print(top_companies)
         
-        ## Questions to Explore:
+        ## Questions to Explore: is as follows
 
         ''')], width=6)
     ], className='mb-3')
