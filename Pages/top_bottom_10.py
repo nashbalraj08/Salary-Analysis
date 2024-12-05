@@ -120,17 +120,22 @@ layout =dbc.Container([
 
 def update_bar_chart(clicks,x_axis,y_axis,top_bottom):
 
+    # Filter out the rows where is 'unknown'
+    filtered_data = data[data[y_axis] != 'Unknown']
+    # Calculate the value counts for the filtered dataset
+    # industry_counts = filtered_data['Industry'].value_counts()
+
     # Create bar chart with Plotly Express
-    bottom_10_sectors = top_bottom_10(data, y_axis, x_axis, 10, top_bottom)
+    bottom_top = top_bottom_10(filtered_data, y_axis, x_axis, 10, top_bottom)
     fig = px.bar(
-        bottom_10_sectors,
+        bottom_top,
         x=x_axis,
         y=y_axis,
         color=x_axis,
         orientation='h',  # Horizontal bars
         color_continuous_scale='Viridis_r', #Blues_r
-        range_color=(bottom_10_sectors[x_axis].min(), bottom_10_sectors[x_axis].max()),  # scale
-        title= f"{top_bottom} 10 {y_axis} by {x_axis}"
+        range_color=(bottom_top[x_axis].min(), bottom_top[x_axis].max()),  # scale
+        title= f"{top_bottom} 10 Company {y_axis} by {x_axis}"
     )
 
     # Customize layout
@@ -141,7 +146,7 @@ def update_bar_chart(clicks,x_axis,y_axis,top_bottom):
         yaxis_title= f"{y_axis}",
         coloraxis_colorbar=dict(
             title= f"{x_axis}",
-            tickvals=[bottom_10_sectors[x_axis].min(), bottom_10_sectors[x_axis].max()],
+            tickvals=[bottom_top[x_axis].min(), bottom_top[x_axis].max()],
             ticktext=['Low', 'High']
         ),
         template="plotly_dark"  # Dark theme
