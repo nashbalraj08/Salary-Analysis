@@ -11,13 +11,47 @@ import dash_bootstrap_components as dbc
 dash.register_page(__name__, path="/top-bottom-10")
 
 
-data = {
-    "via": ["Via A", "Via B", "Via C", "Via D", "Via E", "Via F", "Via G", "Via H", "Via I", "Via J",
-            "Via K", "Via L", "Via M", "Via N", "Via O", "Via P", "Via Q", "Via R", "Via S", "Via T"],
-    "salary": [4000, 3500, 3200, 4500, 5000, 2800, 4200, 3900, 3000, 3100,
-               3400, 4700, 5100, 2900, 4100, 4300, 3600, 3800, 3700, 4800]
-}
-data = pd.DataFrame(data)
+# data = pd.DataFrame({
+#     'Sectors': ['Information Technology', 'Business Services', 'Finance',
+#                 'Health Care', 'Education', 'Insurance',
+#                 'Accounting & Legal', 'Media', 'Manufacturing', 'Retail'],
+#     'Rating': [4.5, 4.2, 3.9, 4.0, 3.5, 3.8, 3.2, 3.0, 3.6, 2.8],
+#     'Count': [550, 450, 350, 300, 200, 150, 120, 100, 90, 80]
+# })
+
+data = pd.read_csv("./Data/cleaned_data.csv",index_col=0)
+
+cleaned_df = data.copy()
+
+
+# # Get the top 10 sectors based on ratings
+# sector_avg_rating = cleaned_df.groupby('Sector')['Rating'].mean().sort_values(ascending=True)
+#
+# top_10_sectors = pd.DataFrame(sector_avg_rating).tail(10)
+# bottom_10_sectors = pd.DataFrame(sector_avg_rating).head(10)
+#
+# # rating_df = top_10_sectors.reset_index()
+# rating_df = bottom_10_sectors.reset_index()
+
+def top_bottom_10(df, groupby_var, measurement_var, top_bottom=10, order="Top"):
+    # Group by the specified variable and calculate the average of the measurement variable
+    grouped_avg = df.groupby(groupby_var)[measurement_var].mean().sort_values(ascending=True)
+    # Select top or bottom N groups
+    if order == "Top":
+        result = grouped_avg.tail(top_bottom)
+    elif order == "Bottom":
+        result = grouped_avg.head(top_bottom)
+    else:
+        raise ValueError("The 'order' parameter must be 'top' or 'bottom'.")
+
+    # Convert the result into a DataFrame and reset the index
+    result_df = result.reset_index()
+
+    return result_df
+
+# bottom_10_sectors = top_bottom_10(data, 'Sector', 'Rating', 10, "bottom")
+
+
 
 numeric_data = data.select_dtypes(include=['number'])  # Separate numeric columns
 categorical_data = data.select_dtypes(exclude=['number'])  # Separate categorical columns
@@ -35,7 +69,7 @@ layout =dbc.Container([
             html.H5("Choose your x-axis value:"),
             dcc.Dropdown(
                         id="x-dropdown",
-                        options=data.columns,
+                        options=numeric_columns,
                         multi=False,
                         value=x_axis
                     )
@@ -44,7 +78,7 @@ layout =dbc.Container([
             html.H5("Choose your y-axis value:"),
             dcc.Dropdown(
                         id="y-dropdown",
-                        options=data.columns,
+                        options=categorical_columns,
                         multi=False,
                         value=y_axis
                     )
@@ -57,17 +91,17 @@ layout =dbc.Container([
                 dcc.Dropdown(
                 id="filter-dropdown",
                 options=[
-                    {"label": "Top 10", "value": "top"},
-                    {"label": "Bottom 10", "value": "bottom"},
-                    {"label": "None", "value": "none"}
+                    {"label": "Top 10", "value": "Top"},
+                    {"label": "Bottom 10", "value": "Bottom"}
                 ],
-                value="none",
+                value="Top",
                 placeholder="Select a filter",
                 style={"width": "50%", "margin": "auto"}
                 )
             ],width=12)
 
         ]),
+        html.Hr(),
         dbc.Row([
         dbc.Button('Update Graph', id='my-button-3', n_clicks=0, style={"width": "100%"}),
         ],className='mb-3'),
@@ -84,32 +118,34 @@ layout =dbc.Container([
     State("filter-dropdown","value")
 )
 
-def update_bar_graph(clicks,x_dropdown, y_dropdown,top_bottom):
-    if top_bottom == "top":
-        filtered_df = data.nlargest(10, "salary")  # Top 10
-    elif top_bottom == "bottom":
-        filtered_df = data.nsmallest(10, "salary")  # Bottom 10
-    else:
-        filtered_df = data
-    bar_graph_2 = px.bar(
-        filtered_df,
-        x="via",
-        y="salary",
-        color="salary",
-        color_continuous_scale="Blues",  # Reverse Blues color scale
-        title="Bar Chart with Color Scale",
-        labels={"salary": "salary"},
-        category_orders={"via": data.sort_values("salary", ascending=False)["via"].tolist()}
-        # Sort in descending order
+def update_bar_chart(clicks,x_axis,y_axis,top_bottom):
+
+    # Create bar chart with Plotly Express
+    bottom_10_sectors = top_bottom_10(data, y_axis, x_axis, 10, top_bottom)
+    fig = px.bar(
+        bottom_10_sectors,
+        x=x_axis,
+        y=y_axis,
+        color=x_axis,
+        orientation='h',  # Horizontal bars
+        color_continuous_scale='Viridis_r', #Blues_r
+        range_color=(bottom_10_sectors[x_axis].min(), bottom_10_sectors[x_axis].max()),  # scale
+        title= f"{top_bottom} 10 {y_axis} by {x_axis}"
     )
-    # Update layout
-    bar_graph_2.update_layout(
-        template="plotly_dark",  # Dark theme
-        xaxis_title="via",
-        yaxis_title="salary",
+
+    # Customize layout
+    fig.update_layout(
+        height=600,
+        title_font_size=20,
+        xaxis_title= f"{x_axis}",
+        yaxis_title= f"{y_axis}",
         coloraxis_colorbar=dict(
-            title="salary",
-            tickvals=np.linspace(data['salary'].min(), data['salary'].max(),num=3),
-            ticktext=["low", "medium", "high"]
-        ))
-    return bar_graph_2
+            title= f"{x_axis}",
+            tickvals=[bottom_10_sectors[x_axis].min(), bottom_10_sectors[x_axis].max()],
+            ticktext=['Low', 'High']
+        ),
+        template="plotly_dark"  # Dark theme
+    )
+
+    return fig
+
