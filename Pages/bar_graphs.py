@@ -23,41 +23,25 @@ result = pd.DataFrame({
     "Total Observations": total_observations.values,
     "Average Rating": average_rating.values
 })
-# print(result)
+print(result)
+print(result.nlargest(10, "Total Observations"))# top 10 rated industries, filtered by industries with the highest total observations
 
+# Step 5: Filter industries with the highest total observations
+top_observations = result.nlargest(10, "Total Observations")
 
-def top_bottom_10(df, groupby_var, measurement_var, top_bottom=10, order="Top"):
-    # Group by the specified variable and calculate the average of the measurement variable
-    grouped_avg = df.groupby(groupby_var)['Total Observations'].mean().sort_values(ascending=True)
-    # Select top or bottom N groups
-    if order == "Top":
-        result = grouped_avg.tail(top_bottom)
-    elif order == "Bottom":
-        result = grouped_avg.head(top_bottom)
-    else:
-        raise ValueError("The 'order' parameter must be 'top' or 'bottom'.")
-
-    # Convert the result into a DataFrame and reset the index
-    result_df = result.reset_index()
-    # print(result_df)
-
-    return result_df
-
-# top_bottom_10(result, 'Industry', 'Average Rating', 10, "Top")
+# Step 6: Sort by Average Rating within the filtered industries
+top_rated_industries = top_observations.sort_values(by="Average Rating", ascending=True)
 
 def update_bar_chart(x_axis,y_axis,top_bottom):
-    x_axis='Average Rating'
-    # Create bar chart with Plotly Express
-    bottom_top = top_bottom_10(result, y_axis, x_axis, 10, top_bottom)
     fig = px.bar(
-        bottom_top,
+        top_rated_industries,
         x=x_axis,
         y=y_axis,
         color=x_axis,
         orientation='h',  # Horizontal bars
         color_continuous_scale='Viridis_r', #Blues_r
-        range_color=(bottom_top[x_axis].min(), bottom_top[x_axis].max()),  # scale
-        title= f"{top_bottom} 10 Company {y_axis} by {x_axis}"
+        range_color=(top_rated_industries[x_axis].min(), top_rated_industries[x_axis].max()),  # scale
+        title= f"{top_bottom} 10 {y_axis} by {x_axis}"
     )
 
     # Customize layout
@@ -68,8 +52,8 @@ def update_bar_chart(x_axis,y_axis,top_bottom):
         yaxis_title= f"{y_axis}",
         coloraxis_colorbar=dict(
             title= f"{x_axis}",
-            tickvals=[bottom_top[x_axis].min(), bottom_top[x_axis].max()],
-            ticktext=['Low', 'High']
+            tickvals=[top_rated_industries[x_axis].min(), top_rated_industries[x_axis].max()],
+            ticktext=['0', '5']
         ),
         template="plotly_dark"  # Dark theme
     )
