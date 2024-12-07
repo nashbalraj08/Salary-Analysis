@@ -23,6 +23,8 @@ layout = dbc.Container([
                  style={"width": "100%", "height": "auto"}),
         html.Img(src=dash.get_asset_url('Top 10_Most_Common_Industries.png'),
                  style={"width": "100%", "height": "auto"}),
+        html.Img(src=dash.get_asset_url('Top 10 Industies by Rating (cleanup).png'),
+                 style={"width": "100%", "height": "auto"}),
     ], width=6),
     dbc.Col([dcc.Markdown('''
                      ## Insights
