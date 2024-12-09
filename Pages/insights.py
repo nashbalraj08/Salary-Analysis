@@ -80,13 +80,147 @@ layout = dbc.Container([
                          ''')], width=6)
     ], className='mb-3'),
 
+dbc.Row([html.H3("Do the older companies have significantly different salary compared to modern companies?")],className='mb-3'),
+    dbc.Row([html.Img(src=dash.get_asset_url('Comparison of Salary before and after 2000.png'),
+                     style={"width": "100%", "height": "auto"})],className='mb-3'),
+    dbc.Row([
+        dbc.Col([
+            dcc.Markdown('''
+                         Before 2000:
+                         * The (IQR) lies between $56K and $80K,indicating most salaries are concentrated between Q1 and Q3, 
+                         as shown by the density of points in the boxplot
+                         * The lower whisker(data within 1.5 times the IQR) represents the minimum salary,excluding outliers, indicating that 
+                         most salary are above $33K
+                         * Q1 --> This means that 25% of data analyst salary are $56K or below.
+                         * Median --> The vertical line inside the box plot represents the median, meaning that half 
+                         of the salary are $68K or below, while the other half above
+                         * Q3 --> This indicates that 75% of salary are $80K or below, while the top 25% are above
+                         * The upper whisker(data within 1.5 times the IQR) represents the maximum salary $113k,excluding outliers
+                         * The interquartile range (IQR) before 2000 is slightly wider (bigger IQR range), indicating
+                          slightly more variation in salary among older companies than newer companies
+                         * Companies founded before 2000 have a slightly wider range of salary compared to those founded after 2000, 
+                                indicating less consistency in older companies' salary range
+                         * Outliers --> There are points with very high salary (above $113k), highlighting the presence 
+                            of highly paid individuals 
+                         * Older companies appear to have less consistent but slightly lower salary
+                         ''')
+        ], width=6),
+        dbc.Col([
+            dcc.Markdown('''
+                         After 2000: 
+                         * The (IQR) lies between $59K and $81K, indicating most salaries are concentrated between Q1 and Q3, 
+                         as shown by the density of points in the boxplot
+                         * The lower whisker(data within 1.5 times the IQR) represents the minimum salary,excluding outliers, indicating that 
+                         most salary are above $33K, similar to period before 2000
+                         * Q1 --> This means that 25% of data analyst salary are $59K or below.
+                         * Median --> The vertical line inside the box plot represents the median, meaning that half 
+                         of the salary are $70K or below, while the other half above
+                         * Q3 --> This indicates that 75% of salary are $81K or below, while the top 25% are above
+                         * The upper whisker(data within 1.5 times the IQR) represents the maximum salary $113k,excluding outliers
+                         * The interquartile range (IQR) before 2000 is slightly narrower (smaller IQR range), indicating
+                          slightly less variation in salary among newer companies salaries than older companies salaries
+                         * Companies founded after 2000 have a  narrower range of salary compared to those founded before 2000, 
+                                indicating more consistency in newer companies' salary range
+                         * Outliers --> There are points with very high salary (above $113k), highlighting the presence 
+                            of highly paid individuals 
+                         * Newer companies appear to have more consistent but similar salary range than older companies for Data Analyst
+                         ''')], width=6)
+    ], className='mb-3'),
 
 
 
+
+
+
+
+    dbc.Row([html.H3("Are there geographical patterns in the dominance of companies before and after 2000?")],className='mb-3'),
+    dbc.Row([dbc.Col([html.H4("Before 2000 Analysis")],width=6),dbc.Col([html.H4("After 2000 Analysis")],width=6)],className='mb-3'),
+    dbc.Row([
+            dbc.Col([
+
+                html.Img(src=dash.get_asset_url('choropleth_map_before_2000.png'),
+                         style={"width": "100%", "height": "auto"}),
+                dcc.Markdown('''
+                         * Before 2000:
+                            * States like California (CA), Texas (TX), and Illinois (IL) show a high concentration of 
+                                companies, indicating these were historically dominant hubs for businesses
+                            * 
+                         ''')
+            ],width=6),
+            dbc.Col([
+
+                html.Img(src=dash.get_asset_url('choropleth_map_after_2000.png'),
+                         style={"width": "100%", "height": "auto"}),
+
+                dcc.Markdown('''
+                        * After 2000: 
+                            * The dominance of California (CA) and Texas (TX) continues, but their share has grown 
+                                further, highlighting these states' growing appeal for newer companies
+                            * California's sustained dominance (both before and after 2000) aligns with its role as the
+                                global hub for technology and innovation.    
+                            * States like New York and Pennsylvania see a decline 
+                         ''')],width=6)
+        ],className='mb-3'),
+
+    dbc.Row([html.H3("Which states do companies offer better salaries?")],className='mb-3'),
+    dbc.Row([
+            dbc.Col([
+
+                html.Img(src=dash.get_asset_url('choropleth_map_before_2000_salary.png'),
+                         style={"width": "100%", "height": "auto"}),
+                dcc.Markdown('''
+                         * Before 2000:
+                            * States with lower ranges, such as Colorado (CO) and Arizona (AZ), suggest that these 
+                                areas were less developed in terms of offering competitive salaries during this period.
+                            * 
+                         ''')
+            ],width=6),
+            dbc.Col([
+
+                html.Img(src=dash.get_asset_url('choropleth_map_after_2000_salary.png'),
+                         style={"width": "100%", "height": "auto"}),
+
+                dcc.Markdown('''
+                        * After 2000: 
+                            * California (CA) continues to lead in salary ranges across both time periods, but Texas 
+                                (TX), Washington (WA), and Colorado (CO) are rapidly catching up after 2000.
+                         ''')],width=6)
+        ],className='mb-3'),
+
+    dbc.Row([html.H3("Which states do companies offer better salaries?")],className='mb-3'),
+    dbc.Row([
+            dbc.Col([
+
+                html.Img(src=dash.get_asset_url('choropleth_map_industry_before_2000.png'),
+                         style={"width": "100%", "height": "auto"}),
+                dcc.Markdown('''
+                         * Before 2000:
+                            * Dominance is more diverse, with industries like Banks & Credit Unions, Investment Banking 
+                            & Asset Management, and Health Care Services & Hospitals playing key roles.
+                         ''')
+            ],width=6),
+            dbc.Col([
+
+                html.Img(src=dash.get_asset_url('choropleth_map_industry_after_2000.png'),
+                         style={"width": "100%", "height": "auto"}),
+
+                dcc.Markdown('''
+                        * After 2000: 
+                            * Industry dominance becomes more consolidated, 
+                                with tech-related industries like IT Services, Computer Hardware & Software, and Staffing & Outsourcing taking over in most states
+                            * Financial industries such as Banks & Credit Unions and Investment Banking & Asset Management, which were dominant before 2000, are no longer as prominent after 2000.
+                                This indicates a shift away from traditional finance hubs to tech-centric industries.    
+                            *The Consulting industry remains stable, maintaining a consistent presence in states like Illinois and Massachusetts across both periods.    
+                        ''')],width=6)
+        ],className='mb-3'),
+
+    html.H2("Rating Analysis"),
+    dbc.Row([html.H3("Do the older companies have significantly different ratings compared to modern companies?")],className='mb-3'),
+    dbc.Row([html.Img(src=dash.get_asset_url('Comparison of Company Ratings Before and After 2000.png'),
+                     style={"width": "100%", "height": "auto"})],className='mb-3'),
 
     dbc.Row([
     dbc.Col([
-        html.H2("Rating Analysis"),
         html.H4("Which industries have the highest and lowest average ratings?"),
         html.Img(src=dash.get_asset_url('top 10 industry by rating.png'),
                  style={"width": "100%", "height": "auto"}),

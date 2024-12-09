@@ -21,12 +21,16 @@ def update_boxplot(x,y):
     boxplot = px.box(df,
                      x=x,
                      y=y,
-                     title="Comparison of Company Ratings Before and After 2000",
+                     title="Comparison of Data Analyst Salary Before and After 2000",
                      points="all",
                      color="Time Period")
-    boxplot.update_layout(template='plotly_dark')
+    boxplot.update_layout(template='plotly_dark',
+                          xaxis_title="Company Founded Periods",
+                          yaxis_title="Salary($)"
+                          )
     boxplot.show()
 
     return "boxplot display in runtime environment"
 
-update_boxplot('Time Period','Rating')
+# update_boxplot('Time Period','Rating')
+update_boxplot('Time Period','Salary Midpoint')

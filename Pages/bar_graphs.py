@@ -156,7 +156,7 @@ def update_bar_chart(x_axis,y_axis,top_bottom):
     #
     # # Save the figure as an image
     # fig.write_image(filename)
-    fig.show()
+    # fig.show()
 
     return "return in ide"
 

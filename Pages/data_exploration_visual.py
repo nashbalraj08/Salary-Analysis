@@ -215,7 +215,8 @@ layout = dbc.Container([
                      * Do modern companies (post-2000) tend to have higher ratings than older companies?
                      * How do the ratings of companies and industries founded before 2000 founded after?
                      * Do salaries vary significantly between older and newer companies?
-                     * Are there geographical patterns in the dominance of industries before and after 2000?
+                     * Are there geographical patterns in the dominance of companies before and after 2000?
+                     * Which states do companies offer better salaries?
                      
                       '''
 
