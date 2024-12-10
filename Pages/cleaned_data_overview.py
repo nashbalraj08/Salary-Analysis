@@ -11,7 +11,8 @@ df = px.data.tips()
 days = df.day.unique()
 
 data = pd.read_csv("./Data/cleaned_data.csv",index_col=0)
-#print(data)
+# print(data)
+data = data.reset_index()
 numeric_data = data.select_dtypes(include=['number'])   # Separate numeric columns
 categorical_data = data.select_dtypes(exclude=['number'])   # Separate categorical columns
 numeric_columns = numeric_data.columns

@@ -11,6 +11,7 @@ data = pd.read_csv("../Data/DataAnalyst.csv", index_col=0)
     with "no company" 
 """
 cleaned_df = data.copy()
+cleaned_df = cleaned_df.reset_index()
 print("copy dataframe:",cleaned_df)
 print("Columns:",cleaned_df.columns.tolist())
 print("Missing Values:",cleaned_df.isnull().sum())
@@ -28,6 +29,21 @@ def print_unique_value_percentages(df, column_name):
     value_counts = df[column_name].value_counts(normalize=True) * 100
     for value, percentage in value_counts.items():
         print(f"{value} --> {percentage:.2f}%")
+
+
+
+#Job Title
+# Mapping similar job titles to a unified name
+job_title_mapping = {
+    "Sr. Data Analyst": "Senior Data Analyst",
+    "Senior Data Analyst": "Senior Data Analyst",
+    "Data Analyst Junior": "Junior Data Analyst",
+    "Junior Data Analyst": "Junior Data Analyst"
+}
+# Replace job titles using the mapping
+cleaned_df["Job Title"] = cleaned_df["Job Title"].replace(job_title_mapping)
+print(cleaned_df['Job Title'].value_counts()[:20])
+
 
 #Salary Estimates
 # print("Unique Values:", cleaned_df['Salary Estimate'].unique())
@@ -108,7 +124,7 @@ cleaned_df['Competitors'] = cleaned_df['Competitors'].replace('-1','Unknown')
 # print_unique_value_percentages(cleaned_df, 'Competitors')
 
 
-#East Apply
+#Easy Apply
 """ is classified as categorical, but has the values true and -1, therefore, change  -1 to false
 """
 # print("Unique Values:", cleaned_df['Easy Apply'].unique())
@@ -147,8 +163,10 @@ cleaned_df = cleaned_df.drop('Salary Estimate', axis=1)
 #Correlation Analysis Cleaning
 numeric_data = cleaned_df.select_dtypes(include=['number'])  # Separate numeric columns
 categorical_data = cleaned_df.select_dtypes(exclude=['number'])  # Separate categorical columns
+print(categorical_data)
 numeric_columns = numeric_data.columns
 categorical_columns = categorical_data.columns
+print(categorical_columns)
 
 correlation_matrix = numeric_data.corr()
 plt.figure(figsize=(10, 8))  # Adjust the figure size
@@ -172,7 +190,7 @@ plt.close()  # Close the figure to free memory
 
 # add new variables
 cleaned_df['Salary Range'] = cleaned_df['Max Salary'] - cleaned_df['Min Salary']
-cleaned_df['Salary Midpoint'] = (cleaned_df['Max Salary'] + cleaned_df['Min Salary']) / 2
+cleaned_df['Salary Average'] = (cleaned_df['Max Salary'] + cleaned_df['Min Salary']) / 2
 numeric_data = cleaned_df.select_dtypes(include=['number'])
 #print(numeric_data)
 correlation_matrix = numeric_data.corr()

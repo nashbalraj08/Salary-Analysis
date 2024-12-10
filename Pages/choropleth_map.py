@@ -2,16 +2,6 @@ import plotly.express as px
 import pandas as pd
 import os
 
-from Pages.bar_graphs import industry_names
-
-# Sample DataFrame
-data = {
-    "Country": ["United States", "Canada", "Germany", "France", "India"],
-    "Company_Count_Before_2000": [100, 50, 80, 70, 120],
-    "Company_Count_After_2000": [150, 70, 90, 110, 200]
-}
-
-df = pd.DataFrame(data)
 
 data2 = pd.read_csv("../Data/cleaned_data.csv",index_col=0)
 

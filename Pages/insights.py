@@ -213,8 +213,38 @@ dbc.Row([html.H3("Do the older companies have significantly different salary com
                             *The Consulting industry remains stable, maintaining a consistent presence in states like Illinois and Massachusetts across both periods.    
                         ''')],width=6)
         ],className='mb-3'),
+    dbc.Row([html.Img(src=dash.get_asset_url('treemap_before_after_2000.png'),
+                      style={"width": "100%", "height": "auto"})], className='mb-3'),
 
     html.H2("Rating Analysis"),
+    dbc.Row([html.H3("What are the top 10 rated Roles?")],
+            className='mb-3'),
+    dbc.Row([
+        dbc.Col([
+            html.Img(src=dash.get_asset_url('skewed job roles.png'),
+                     style={"width": "100%", "height": "auto"})
+        ], width=6),
+        dbc.Col([dcc.Markdown('''
+                     ## Insights
+                     * Top rated role is AI insights 
+                        * the reason for this role being the most highly rated is because there 
+                          is only one observation the whole dataset with rating score of 5, similar for next 5 roles
+                     * Since, the top 5 rated roles have low observations and not part of 
+                        the top 10 most common roles in the dataset. There should be ignored
+                        since provide false information that new data analyst will seek in applying
+                        for jobs since their look highly rated roles but not enough information from users
+                        suggest their are popular roles       
+                     
+
+    '''),
+                 html.Img(src=dash.get_asset_url('Top_10_Most_Common_Roles.png'),
+                          style={"width": "100%", "height": "auto"})
+                 ], width=6),
+    ], className='mb-3'),
+    dbc.Row([html.Img(src=dash.get_asset_url('top_10_rated_roles.png'),
+                      style={"width": "100%", "height": "auto"})], className='mb-3'),
+
+
     dbc.Row([html.H3("Do the older companies have significantly different ratings compared to modern companies?")],className='mb-3'),
     dbc.Row([html.Img(src=dash.get_asset_url('Comparison of Company Ratings Before and After 2000.png'),
                      style={"width": "100%", "height": "auto"})],className='mb-3'),
@@ -335,32 +365,40 @@ dbc.Row([html.H3("Do the older companies have significantly different salary com
                      ''')],width=6)
     ],className='mb-3'),
 
+    dbc.Row([html.H3("Compare salaries by Industry")],className='mb-3'),
+    dbc.Row([dbc.Col([html.H4("Before 2000 Analysis")],width=6),dbc.Col([html.H4("After 2000 Analysis")],width=6)],className='mb-3'),
+    dbc.Row([
+            dbc.Col([
+                html.Img(src=dash.get_asset_url('boxplot_salary_industry_before_2000.png'),
+                         style={"width": "100%", "height": "auto"}),
+                dcc.Markdown('''
+                         * Before 2000:
+                            * Industries like Health Care Services & Hospitals and Investment Banking & Asset Management
+                             have highest median salaries.
+                            * Salaries are more compressed with smaller interquartile ranges, narrower spreads,indicating 
+                                consistent pay scales
+                            * Outliers present 
+                            * Traditional industries like Health Care and Finance (Banks & Credit Unions) dominate salaries.
+                         ''')
+            ],width=6),
+            dbc.Col([
 
-dbc.Row([
-        dbc.Col([
-            html.H2("Founded Analysis"),
-            html.H4("Are newer companies (post-2000) concentrated in industries?"),
-            html.Img(src=dash.get_asset_url('Post 2000 Industry.png'),
-                     style={"width": "100%", "height": "auto"}),
-            html.Img(src=dash.get_asset_url('before 2000 Industry.png'),
-                     style={"width": "100%", "height": "auto"})
-        ],width=6),
-        dbc.Col([ dcc.Markdown('''
-                     ## Insights
-                     * Before 2000:
-                        * Top Industry: Staffing & Outsourcing 
-                        * The focus is on traditional industries like staffing, IT, healthcare, and finance, 
-                            which were well-established sectors.
-                    * After 2000: 
-                        * Top Industry: IT Services (overtakes Staffing & Outsourcing)
-                        * There is a noticeable shift towards tech-centric industries (e.g., Internet, Software),
-                            reflecting the tech boom and digital transformation post-2000
-                     ''')],width=6)
-    ],className='mb-3'),
+                html.Img(src=dash.get_asset_url('boxplot_salary_industry_after_2000.png'),
+                         style={"width": "100%", "height": "auto"}),
 
+                dcc.Markdown('''
+                        * After 2000: 
+                            * Internet and IT Services industries lead with the highest median salaries
+                            * A wider spread in salaries is evident,signaling more variance between high and low salaries.
+                            * Outliers present,More frequent outlier than before 2000 suggest some very high-paying roles 
+                            emerged post-2000.
+                            * Technology-oriented industries like Internet, IT Services, and Software & Network Solutions 
+                            take the lead, reflecting the growth of the tech sector.
+                            
+                         ''')],width=6)
+        ],className='mb-3'),
 
-
-
+    dbc.Row([html.H3("Current openings")], className='mb-3'),
 
     dbc.Row([
         dbc.Col([
@@ -369,7 +407,6 @@ dbc.Row([
         ], width=6),
         dbc.Col([dcc.Markdown('''
         Analyze Min Salary and Max Salary distribution.
-        Compare salaries by Industry or Location using boxplots.
         ## Insights
            top 10 companies with the most "Easy Apply" job postings
             df_easy_apply = cleaned_df[cleaned_df['Easy Apply'] == True] #Filters the data DataFrame to include only rows where 'Easy Apply' is True.
