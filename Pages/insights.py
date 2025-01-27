@@ -396,30 +396,7 @@ dbc.Row([html.H3("Do the older companies have significantly different salary com
                             take the lead, reflecting the growth of the tech sector.
                             
                          ''')],width=6)
-        ],className='mb-3'),
-
-    dbc.Row([html.H3("Current openings")], className='mb-3'),
-
-    dbc.Row([
-        dbc.Col([
-
-
-        ], width=6),
-        dbc.Col([dcc.Markdown('''
-        Analyze Min Salary and Max Salary distribution.
-        ## Insights
-           top 10 companies with the most "Easy Apply" job postings
-            df_easy_apply = cleaned_df[cleaned_df['Easy Apply'] == True] #Filters the data DataFrame to include only rows where 'Easy Apply' is True.
-            
-            top_companies = cleaned_df[cleaned_df['Easy Apply']].groupby('Company Name').size().nlargest(10)
-            
-            print("Top 10 companies with the most 'Easy Apply' job postings:")
-            print(top_companies)
-        
-        ## Questions to Explore: is as follows
-
-        ''')], width=6)
-    ], className='mb-3')
+        ],className='mb-3')
 
 
 ])
