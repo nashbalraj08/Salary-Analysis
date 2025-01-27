@@ -37,7 +37,7 @@ pip install -r requirements.txt
    ```bash
    python main.py
    ```
-### Step 5: View Results:
+### Step 4: View Results:
    After running the program, the default web browser will open the interactive dashboard. Explore the trends and insights visually. You can view more exploration pages in the navbar "more pages"
 
 ---
