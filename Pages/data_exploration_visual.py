@@ -173,17 +173,10 @@ layout = dbc.Container([
 
          ## Questions to Explore:
          1. Which industries have the highest and lowest average ratings?
-         2. Do smaller companies (in size or revenue) tend to have lower ratings?
-         3. Are low-rated companies offering lower salaries than high-rated ones?
-         4. Analyze trends in ratings over time (if the Founded column indicates company age)
-         5. Analyze correlations between Rating and numeric variables like Min Salary or Max Salary
-         6. Explore their job descriptions and industries to find patterns
-         7. Look at additional factors like company size or ownership type to understand challenges.
-         8. Compare Ratings by Categories 
-             * Industry: Are certain industries consistently rated higher or lower?
-             * Company Size: Do larger companies have higher ratings compared to smaller ones?
-             * Revenue: Explore if company revenue correlates with better ratings.
-
+         2. Do smaller companies (in size) tend to have lower ratings?
+         3. Are highly-rated companies offering high salaries?
+         4. What are the trends in ratings over time
+         5. What is the correlations between Rating and numeric variables like Min Salary or Max Salary?
          '''
 
                                  )
@@ -214,21 +207,19 @@ layout = dbc.Container([
                      * Median --> The vertical line inside the box plot represents the median, meaning that half of the companies founded are in 1997 or below, while the other half founded after 1997.
                      * Q3 --> This indicates that 75% companies were founded in 2006 or below, while the top 25% founded after 2006
                      * The upper whisker represents the maximum year founded in 2019 in the data, excluding outlier
-        
-                     ## Questions to Explore:
-                     1. Which industries have the highest and lowest average ratings?
-                     2. Do smaller companies (in size or revenue) tend to have lower ratings?
-                     3. Are low-rated companies offering lower salaries than high-rated ones?
-                     4. Analyze trends in ratings over time (if the Founded column indicates company age).
-                     5. Analyze correlations between Rating and numeric variables like Min Salary or Max Salary.
-                     6. Explore their job descriptions and industries to find patterns.
-                     7. Look at additional factors like company size or ownership type to understand challenges.
-                     8. Compare Ratings by Categories 
-                         * Industry: Are certain industries consistently rated higher or lower?
-                         * Company Size: Do larger companies have higher ratings compared to smaller ones?
-                         * Revenue: Explore if company revenue correlates with better ratings.
-        
+                    
+                    
+                    ## Questions to Explore:
+                     * Are newer companies (post-2000) concentrated in industries?
+                     * Do the older outlier companies have significantly different ratings or salary structures compared to modern companies?
+                     * Do modern companies (post-2000) tend to have higher ratings than older companies?
+                     * How do the ratings of companies and industries founded before 2000 founded after?
+                     * Do salaries vary significantly between older and newer companies?
+                     * Are there geographical patterns in the dominance of companies before and after 2000?
+                     * Which states do companies offer better salaries?
+                     
                       '''
+
 
                                      )
 

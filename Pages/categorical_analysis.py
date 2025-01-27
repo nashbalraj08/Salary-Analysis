@@ -6,6 +6,7 @@ import time
 
 
 data = pd.read_csv("../Data/cleaned_data.csv", index_col=0)
+data = data.reset_index()
 # # print(data)
 #
 # sector_avg_rating = data.groupby('Founded')['Rating'].mean().sort_values(ascending=False)
@@ -62,9 +63,9 @@ data = pd.read_csv("../Data/cleaned_data.csv", index_col=0)
 # # Find the most common categories
 #
 # Filter out the rows where 'Industry' is 'unknown'
-filtered_data = data[data['Industry'] != 'Unknown']
+filtered_data = data[data['Job Title'] != 'Unknown']
 # Calculate the value counts for the filtered dataset
-industry_counts = filtered_data['Industry'].value_counts()
+industry_counts = filtered_data['Job Title'].value_counts()
 # #
 # #
 # # company_name_counts = data['Company Name'].value_counts()
@@ -93,11 +94,11 @@ industry_counts = filtered_data['Industry'].value_counts()
 #
 # Plot the top 10 industries
 plt.figure(figsize=(10, 6))
-sns.barplot(x=industry_counts.tail(10).values, y=industry_counts.tail(10).index, palette="Blues_r")
-plt.title("Top 10 Most Common Sectors", fontsize=16)
-plt.xlabel("Count")
-plt.ylabel("Sectors")
+sns.barplot(x=industry_counts.head(10).values, y=industry_counts.head(10).index, palette="Blues_r")
+plt.title("Top 10 Most Common Roles", fontsize=16)
+plt.xlabel("Number of Observations")
+plt.ylabel("Roles")
 plt.tight_layout()
-# plt.savefig("../assets/Top_10_Most_Common_Sectors.png")  # Save the figure as an image
+plt.savefig("../assets/Top_10_Most_Common_Roles.png")  # Save the figure as an image
 plt.show()
 plt.close()

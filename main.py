@@ -16,7 +16,7 @@ navbar = dbc.NavbarSimple(
         nav=True,
         label="More Pages",
     ),
-    brand="Multi Page App Demo",
+    brand="Data Analyst Salaries",
     color="primary",
     dark=True,
     className="mb-5",

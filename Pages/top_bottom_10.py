@@ -22,8 +22,9 @@ dash.register_page(__name__, path="/top-bottom-10")
 data = pd.read_csv("./Data/cleaned_data.csv",index_col=0)
 
 cleaned_df = data.copy()
-
-
+cleaned_df = cleaned_df.reset_index()
+print(cleaned_df)
+print(data.dtypes)
 # # Get the top 10 sectors based on ratings
 # sector_avg_rating = cleaned_df.groupby('Sector')['Rating'].mean().sort_values(ascending=True)
 #
@@ -53,10 +54,13 @@ def top_bottom_10(df, groupby_var, measurement_var, top_bottom=10, order="Top"):
 
 
 
-numeric_data = data.select_dtypes(include=['number'])  # Separate numeric columns
-categorical_data = data.select_dtypes(exclude=['number'])  # Separate categorical columns
+numeric_data = cleaned_df.select_dtypes(include=['number'])  # Separate numeric columns
+categorical_data = cleaned_df.select_dtypes(exclude=['number'])  # Separate categorical columns
+
+
 numeric_columns = numeric_data.columns
 categorical_columns = categorical_data.columns
+
 # Set default values
 x_axis = numeric_columns[0] if len(numeric_columns) > 0 else None  # First numeric column
 y_axis = categorical_columns[0] if len(categorical_columns) > 0 else None  # First categorical column
@@ -121,7 +125,7 @@ layout =dbc.Container([
 def update_bar_chart(clicks,x_axis,y_axis,top_bottom):
 
     # Filter out the rows where is 'unknown'
-    filtered_data = data[data[y_axis] != 'Unknown']
+    filtered_data = cleaned_df[cleaned_df[y_axis] != 'Unknown']
     # Calculate the value counts for the filtered dataset
     # industry_counts = filtered_data['Industry'].value_counts()
 
