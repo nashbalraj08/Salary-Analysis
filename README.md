@@ -1,4 +1,4 @@
-# Salary Analysis Project
+# Salary Analysis for Data Analysis
 
 ## Project Overview
 This project analyzes data analyst salary trends before and after the year 2000. It leverages Python for data processing and visualization to uncover trends and insights within the dataset. The final output is a web-based interactive dashboard that displays the findings.
